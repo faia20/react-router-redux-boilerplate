@@ -1,18 +1,30 @@
 import React from 'react'
 import { Link } from 'react-router'
+import styled from 'styled-components'
+
+const NavBar = styled.div`
+  background: grey;
+  font-size: 1.3em;
+`
+
+const StyledLink = styled(Link)`
+  color: white;
+`
 
 export default function Nav () {
   return (
     <header>
-      Links:
-      {' '}
-      <Link to='/'>Home</Link>
-      {' '}
-      <Link to='/foo'>Foo</Link>
-      {' '}
-      <Link to='/test'>Test</Link>
-      {' '}
-      <Link to='/bar'>Bar</Link>
+      <NavBar>
+        Links:
+        {' '}
+        <StyledLink to='/'>Home</StyledLink>
+        {' '}
+        <StyledLink to='/foo'>Foo</StyledLink>
+        {' '}
+        <StyledLink to='/test'>Test</StyledLink>
+        {' '}
+        <StyledLink to='/bar'>Bar</StyledLink>
+      </NavBar>
     </header>
   )
 }

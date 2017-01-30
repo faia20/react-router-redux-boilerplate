@@ -27,6 +27,9 @@ server.connection({
 
 const HTML = ({content, store}) => (
   <html>
+    <head>
+      <link rel='stylesheet' href='/resources/default.css' />
+    </head>
     <body>
       <div id='root' dangerouslySetInnerHTML={{ __html: content }} />
       <script
@@ -49,6 +52,14 @@ server.register(require('inert'), (err) => {
     path: '/resources/bundle.js',
     handler: function (request, reply) {
       reply.file('bundle.js')
+    }
+  })
+
+  server.route({
+    method: 'GET',
+    path: '/resources/default.css',
+    handler: function (request, reply) {
+      reply.file('default.css')
     }
   })
 
