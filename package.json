@@ -1,12 +1,17 @@
 {
-  "name": "boilerplate-react-router-redux",
+  "name": "react-router-redux-boilerplate",
   "version": "1.0.0",
   "engines": {
-    "node": "^6.x.x",
-    "npm": "^3.x.x"
+    "node": "6.x.x",
+    "npm": "3.x.x"
   },
   "license": "MIT",
   "dependencies": {
+    "hapi": "16.1.0",
+    "inert": "^4.1.0",
+    "install": "^0.8.4",
+    "nodemon": "1.11.0",
+    "npm": "^4.1.2",
     "react": "0.14.8",
     "react-dom": "0.14.8",
     "react-redux": "4.4.6",
@@ -29,13 +34,21 @@
     "eslint-config-rackt": "1.1.1",
     "eslint-plugin-react": "3.16.1",
     "express": "4.14.0",
+    "hapi-webpack": "^1.0.0",
+    "install": "^0.8.4",
+    "npm": "^4.1.2",
     "redux-devtools": "3.3.2",
     "redux-devtools-dock-monitor": "1.1.1",
     "redux-devtools-log-monitor": "1.2.0",
+    "styled-components": "^1.4.1",
     "webpack": "1.14.0",
     "webpack-dev-middleware": "1.9.0"
   },
   "scripts": {
-    "start": "babel-node src/server"
+    "build": "npm run scripts:client && npm run scripts:server && npm run scripts:views",
+    "scripts:client": "webpack --progress --colors",
+    "scripts:server": "babel src/server -sd dist/server --ignore *_spec.js",
+    "scripts:views": "babel src/views -sd dist/views --ignore *_spec.js",
+    "start": "nodemon dist/server"
   }
 }

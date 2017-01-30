@@ -1,62 +1,96 @@
-/*eslint-disable no-console */
-import express from 'express'
+import Hapi from 'hapi'
+import Path from 'path'
 import serialize from 'serialize-javascript'
 
-import webpack from 'webpack'
-import webpackDevMiddleware from 'webpack-dev-middleware'
-import webpackConfig from '../../webpack.config'
-
 import React from 'react'
-import { renderToString } from 'react-dom/server'
-import { Provider } from 'react-redux'
-import { createMemoryHistory, match, RouterContext } from 'react-router'
-import { syncHistoryWithStore } from 'react-router-redux'
+import {renderToString} from 'react-dom/server'
+import {Provider} from 'react-redux'
+import {createMemoryHistory, match, RouterContext} from 'react-router'
+import {syncHistoryWithStore} from 'react-router-redux'
 
-import { configureStore } from '../store'
-import routes from '../routes'
+import {configureStore} from '../views/store'
+import routes from '../views/routes'
 
-const app = express()
-
-app.use(webpackDevMiddleware(webpack(webpackConfig), {
-  publicPath: '/__build__/',
-  stats: {
-    colors: true
+const server = new Hapi.Server({
+  connections: {
+    routes: {
+      files: {
+        relativeTo: Path.join(__dirname, '../client')
+      }
+    }
   }
-}))
+})
 
-const HTML = ({ content, store }) => (
+server.connection({
+  port: process.env.PORT || 3001
+})
+
+const HTML = ({content, store}) => (
   <html>
     <body>
       <div id='root' dangerouslySetInnerHTML={{ __html: content }} />
-      <div id='devtools' />
-      <script dangerouslySetInnerHTML={{ __html: `window.__initialState__=${serialize(store.getState())};` }} />
-      <script src='/__build__/bundle.js' />
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `window.__initialState__=${serialize(store.getState())};`
+        }}
+      />
+      <script src='resources/bundle.js' />
     </body>
   </html>
 )
 
-app.use(function (req, res) {
-  const memoryHistory = createMemoryHistory(req.url)
-  const store = configureStore(memoryHistory)
-  const history = syncHistoryWithStore(memoryHistory, store)
+server.register(require('inert'), (err) => {
+  if (err) {
+    throw err
+  }
 
-  match({ history, routes, location: req.url }, (error, redirectLocation, renderProps) => {
-    if (error) {
-      res.status(500).send(error.message)
-    } else if (redirectLocation) {
-      res.redirect(302, redirectLocation.pathname + redirectLocation.search)
-    } else if (renderProps) {
-      const content = renderToString(
-        <Provider store={store}>
-          <RouterContext {...renderProps} />
-        </Provider>
-      )
-
-      res.send('<!doctype html>\n' + renderToString(<HTML content={content} store={store} />))
+  server.route({
+    method: 'GET',
+    path: '/resources/bundle.js',
+    handler: function (request, reply) {
+      reply.file('bundle.js')
     }
   })
-})
 
-app.listen(8080, function () {
-  console.log('Server listening on http://localhost:8080, Ctrl+C to stop')
+  server.route({
+    method: 'GET',
+    path: '/{path*}',
+    handler: function (request, reply) {
+      const memoryHistory = createMemoryHistory(request.path)
+      const store = configureStore(memoryHistory)
+      const history = syncHistoryWithStore(memoryHistory, store)
+
+      match({
+        history,
+        routes,
+        location: request.path
+      }, (error, redirectLocation, renderProps) => {
+        if (error) {
+          reply(error.message).code(500)
+        } else if (redirectLocation) {
+          reply.redirect(redirectLocation.pathname + redirectLocation.search)
+        } else if (renderProps) {
+          const content = renderToString(
+            <Provider store={store}>
+              <RouterContext {...renderProps} />
+            </Provider>
+          )
+
+          const html = '<!doctype html>' + renderToString(
+            <HTML content={content} store={store} />
+          )
+
+          reply(html)
+        }
+      })
+    }
+  })
+
+  server.start(error => {
+    if (error) {
+      throw error
+    }
+
+    console.log(`Server is running at ${server.info.uri}`)
+  })
 })
