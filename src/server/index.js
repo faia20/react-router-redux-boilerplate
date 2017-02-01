@@ -28,6 +28,7 @@ server.connection({
 const HTML = ({content, store}) => (
   <html>
     <head>
+      <title></title>
       <link rel='stylesheet' href='/resources/default.css' />
     </head>
     <body>
@@ -49,17 +50,10 @@ server.register(require('inert'), (err) => {
 
   server.route({
     method: 'GET',
-    path: '/resources/bundle.js',
+    path: '/resources/{filename}',
     handler: function (request, reply) {
-      reply.file('bundle.js')
-    }
-  })
-
-  server.route({
-    method: 'GET',
-    path: '/resources/default.css',
-    handler: function (request, reply) {
-      reply.file('default.css')
+      const fileName = request.params.filename
+      reply.file(fileName)
     }
   })
 

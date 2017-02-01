@@ -6,6 +6,21 @@
     "npm": "3.x.x"
   },
   "license": "MIT",
+  "scripts": {
+    "build": "npm run build:data && npm run scripts:client && npm run scripts:server && npm run scripts:views && npm run styles",
+    "build:data": "babel src/data -sd dist/data --ignore *_spec.js",
+    "scripts:client": "webpack --progress --colors",
+    "scripts:server": "babel src/server -sd dist/server --ignore *_spec.js",
+    "scripts:views": "babel src/views -sd dist/views --ignore *_spec.js",
+    "styles": "node-sass --output-style compressed src/styles/default.sass dist/client/default.css",
+    "watch": "npm run watch:client & npm run watch:data & npm run watch:server & npm run watch:views & npm run watch:styles",
+    "watch:client": "webpack --progress --colors --watch --config webpack.local.js",
+    "watch:data": "babel src/data -wsd dist/data",
+    "watch:server": "babel src/server -wsd dist/server",
+    "watch:views": "babel src/views -wsd dist/views",
+    "watch:styles": "nodemon -e sass -x \"npm run styles\"",
+    "start": "nodemon dist/server"
+  },
   "dependencies": {
     "hapi": "16.1.0",
     "inert": "^4.1.0",
@@ -41,13 +56,5 @@
     "styled-components": "1.4.1",
     "webpack": "1.14.0",
     "webpack-dev-middleware": "1.9.0"
-  },
-  "scripts": {
-    "build": "npm run scripts:client && npm run scripts:server && npm run scripts:views && npm run styles",
-    "scripts:client": "webpack --progress --colors",
-    "scripts:server": "babel src/server -sd dist/server --ignore *_spec.js",
-    "scripts:views": "babel src/views -sd dist/views --ignore *_spec.js",
-    "styles": "node-sass --output-style compressed src/styles/default.sass dist/client/default.css",
-    "start": "nodemon dist/server"
   }
 }

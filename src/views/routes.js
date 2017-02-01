@@ -9,7 +9,7 @@ import Bar from './components/Bar'
 const routes = (
   <Route path='/' component={App}>
     <IndexRoute component={Home} />
-    <Route name='foo' path='foo' component={Foo} />
+    <Route name='foo' path='foo' component={() => (<Foo myProp='testeeee' />)} />
     <Route name='bar' path='bar' component={Bar} />
     <Route name='test' path='test' component={Test} />
   </Route>

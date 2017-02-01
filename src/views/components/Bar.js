@@ -1,4 +1,5 @@
 import React from 'react'
+import bar from '../../data/components/bar'
 import styled from 'styled-components'
 
 const Abar = styled.div`
@@ -9,5 +10,5 @@ const Abar = styled.div`
 `
 
 export default function Bar () {
-  return <h1>I am a <Abar>Bar</Abar></h1>
+  return <h1><Abar>{bar.title}</Abar></h1>
 }

@@ -1,5 +1,6 @@
 import React from 'react'
+import foo from '../../data/components/foo'
 
 export default function Foo () {
-  return <h1>I am foo.</h1>
+  return <h1>{foo.title}</h1>
 }

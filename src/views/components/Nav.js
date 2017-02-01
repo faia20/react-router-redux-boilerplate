@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router'
+import nav from '../../data/components/nav'
 import styled from 'styled-components'
 
 const NavBar = styled.div`
@@ -17,13 +18,13 @@ export default function Nav () {
       <NavBar>
         Links:
         {' '}
-        <StyledLink to='/'>Home</StyledLink>
+        <StyledLink to={nav.homeLink.route}>{nav.homeLink.text}</StyledLink>
         {' '}
-        <StyledLink to='/foo'>Foo</StyledLink>
+        <StyledLink to={nav.fooLink.route}>{nav.fooLink.text}</StyledLink>
         {' '}
-        <StyledLink to='/test'>Test</StyledLink>
+        <StyledLink to={nav.testLink.route}>{nav.testLink.text}</StyledLink>
         {' '}
-        <StyledLink to='/bar'>Bar</StyledLink>
+        <StyledLink to={nav.barLink.route}>{nav.barLink.text}</StyledLink>
       </NavBar>
     </header>
   )
